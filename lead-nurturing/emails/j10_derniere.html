@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Un dernier mot — {{agency_name}}</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f5f5f0; font-family: 'Georgia', serif; color: #2c2c2c; }
+    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 4px; overflow: hidden; }
+    .header { background-color: #1a1a2e; padding: 40px 48px; }
+    .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+    .header p { margin: 6px 0 0; color: #a0a0b8; font-size: 13px; letter-spacing: 1px; }
+    .body { padding: 48px; }
+    .body h2 { font-size: 20px; font-weight: 400; color: #1a1a2e; margin: 0 0 24px; }
+    .body p { font-size: 15px; line-height: 1.8; margin: 0 0 18px; color: #444; }
+    .warm-block { background: #f0f4f8; border-radius: 4px; padding: 28px 32px; margin: 28px 0; }
+    .warm-block p { margin: 0 0 12px; font-size: 15px; color: #3a4a5c; }
+    .warm-block p:last-child { margin: 0; }
+    .signature { margin-top: 32px; padding-top: 24px; border-top: 1px solid #eee; }
+    .signature p { margin: 0; font-size: 14px; color: #555; line-height: 1.7; }
+    .signature .name { font-size: 16px; color: #1a1a2e; }
+    .cta { display: inline-block; margin-top: 12px; background-color: #1a1a2e; color: #ffffff; text-decoration: none; padding: 14px 32px; font-size: 14px; letter-spacing: 1px; border-radius: 2px; }
+    .cta-ghost { display: inline-block; margin-top: 12px; margin-left: 16px; border: 1px solid #1a1a2e; color: #1a1a2e; text-decoration: none; padding: 13px 28px; font-size: 14px; letter-spacing: 1px; border-radius: 2px; }
+    .footer { border-top: 1px solid #eee; padding: 28px 48px; font-size: 12px; color: #999; line-height: 1.7; }
+    .footer a { color: #999; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>{{agency_name}}</h1>
+      <p>Agence Immobilière</p>
+    </div>
+    <div class="body">
+      <h2>{{lead_name}}, c'est peut-être notre dernier message</h2>
+      <p>
+        Nous ne souhaitons pas vous importuner — c'est pourquoi ce sera notre
+        dernière prise de contact automatique. Nous respectons votre temps
+        et comprenons que les priorités changent.
+      </p>
+
+      <div class="warm-block">
+        <p>
+          Peut-être que votre projet a évolué, que vous avez déjà trouvé
+          ce que vous cherchiez, ou simplement que ce n'est pas le bon moment.
+          Tout cela est parfaitement normal.
+        </p>
+        <p>
+          Ce que nous tenons à vous dire : si vous avez un jour besoin d'un
+          regard honnête sur le marché, d'une estimation ou d'un simple conseil,
+          notre porte reste ouverte. Sans engagement, sans pression.
+        </p>
+      </div>
+
+      <p>
+        Si toutefois votre projet est toujours d'actualité et que vous souhaitez
+        qu'on reprenne contact, il vous suffit de cliquer ci-dessous.
+        Nous serons là.
+      </p>
+
+      <a href="{{reactivate_url}}" class="cta">Oui, je suis toujours intéressé(e)</a>
+      <a href="{{unsubscribe_url}}" class="cta-ghost">Me retirer de la liste</a>
+
+      <div class="signature">
+        <p class="name">{{agent_name}}</p>
+        <p>
+          Conseiller immobilier · {{agency_name}}<br />
+          {{agent_phone}} · <a href="mailto:{{agent_email}}" style="color:#555;">{{agent_email}}</a>
+        </p>
+      </div>
+    </div>
+    <div class="footer">
+      <p>
+        {{agency_name}} · {{agency_address}}<br />
+        <a href="mailto:{{agency_email}}">{{agency_email}}</a> · {{agency_phone}}
+      </p>
+      <p><a href="{{unsubscribe_url}}">Se désabonner définitivement</a></p>
+    </div>
+  </div>
+</body>
+</html>
