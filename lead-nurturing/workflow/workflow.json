@@ -1,12 +1,17 @@
 {
-  "name": "Lead Nurturing — Agence",
+  "name": "Lead Nurturing — Agence Immobilière",
+  "versionId": "0c91a0d7-37a3-4322-86fa-9da649e28a39",
   "nodes": [
     {
-      "id": "1",
-      "name": "Webhook Trigger",
+      "id": "8e594f7c-2dce-4c52-85eb-24e64a4609b7",
+      "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300],
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "3af0cb39-bce1-4ece-ba55-59914213b6f1",
       "parameters": {
         "httpMethod": "POST",
         "path": "lead-nurturing",
@@ -15,87 +20,102 @@
       }
     },
     {
-      "id": "2",
-      "name": "Wait",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
-      "position": [500, 300],
-      "parameters": {
-        "resume": "timeInterval",
-        "unit": "days",
-        "amount": "={{ $json.delay_days ?? 0 }}"
-      }
-    },
-    {
-      "id": "3",
-      "name": "Send Email",
+      "id": "61aed024-5851-4a13-a5c4-51b4a6fd522c",
+      "name": "Email Bienvenue J0",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "position": [750, 300],
+      "position": [
+        500,
+        300
+      ],
       "parameters": {
-        "fromEmail": "={{ $env.SMTP_EMAIL }}",
+        "fromEmail": "={{ $json.from_email }}",
         "toEmail": "={{ $json.lead_email }}",
-        "subject": "={{ $json.email_subject }}",
+        "subject": "=Bienvenue {{ $json.lead_name }}",
         "emailType": "html",
-        "message": "={{ $json.email_body }}",
+        "message": "<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Bienvenue</title>\n  <style>\n    body { margin: 0; padding: 0; background-color: #f5f5f0; font-family: 'Georgia', serif; color: #2c2c2c; }\n    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 4px; overflow: hidden; }\n    .header { background-color: #1a1a2e; padding: 40px 48px; }\n    .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }\n    .header p { margin: 6px 0 0; color: #a0a0b8; font-size: 13px; letter-spacing: 1px; }\n    .body { padding: 48px; }\n    .body h2 { font-size: 20px; font-weight: 400; color: #1a1a2e; margin: 0 0 24px; }\n    .body p { font-size: 15px; line-height: 1.8; margin: 0 0 18px; color: #444; }\n    .highlight { background: #f5f5f0; border-left: 3px solid #1a1a2e; padding: 16px 20px; margin: 28px 0; font-size: 14px; color: #555; }\n    .cta { display: inline-block; margin-top: 12px; background-color: #1a1a2e; color: #ffffff; text-decoration: none; padding: 14px 32px; font-size: 14px; letter-spacing: 1px; border-radius: 2px; }\n    .footer { border-top: 1px solid #eee; padding: 28px 48px; font-size: 12px; color: #999; line-height: 1.7; }\n    .footer a { color: #999; text-decoration: underline; }\n  </style>\n</head>\n<body>\n  <div class=\"wrapper\">\n    <div class=\"header\">\n      <h1>{{agency_name}}</h1>\n      <p>Agence Immobilière</p>\n    </div>\n    <div class=\"body\">\n      <h2>Bonjour {{lead_name}},</h2>\n      <p>\n        Nous avons bien reçu votre demande et nous vous remercions de votre confiance.\n        Notre équipe est à votre disposition pour vous accompagner dans votre projet immobilier\n        avec soin et professionnalisme.\n      </p>\n      <p>\n        Que vous souhaitiez acquérir, vendre ou investir, nous mettons notre connaissance\n        approfondie du marché local au service de vos ambitions.\n      </p>\n      <div class=\"highlight\">\n        Un conseiller dédié prendra contact avec vous dans les 24 heures pour échanger\n        sur votre projet et répondre à toutes vos questions.\n      </div>\n      <p>En attendant, n'hésitez pas à consulter nos dernières sélections de biens.</p>\n      <a href=\"{{agency_website}}\" class=\"cta\">Voir nos biens</a>\n    </div>\n    <div class=\"footer\">\n      <p>\n        {{agency_name}} · {{agency_address}}<br />\n        <a href=\"mailto:{{agency_email}}\">{{agency_email}}</a> · {{agency_phone}}\n      </p>\n      <p>Vous recevez cet email car vous avez effectué une demande sur notre site.<br />\n        <a href=\"{{unsubscribe_url}}\">Se désabonner</a>\n      </p>\n    </div>\n  </div>\n</body>\n</html>\n",
         "options": {}
       },
       "credentials": {
         "smtp": {
-          "id": "smtp-credentials",
+          "id": "",
           "name": "SMTP"
         }
       }
     },
     {
-      "id": "4",
-      "name": "Notion Append",
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2,
-      "position": [1000, 300],
+      "id": "ea82c320-b174-4e39-8dbf-12199a83e4d4",
+      "name": "Wait 2 jours",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        750,
+        300
+      ],
       "parameters": {
-        "resource": "databasePage",
-        "operation": "create",
-        "databaseId": "={{ $env.NOTION_DATABASE_ID }}",
-        "title": "={{ $json.lead_name }}",
-        "propertiesUi": {
-          "propertyValues": [
-            {
-              "key": "Email",
-              "emailValue": "={{ $json.lead_email }}"
-            },
-            {
-              "key": "Statut",
-              "selectValue": "Contacté"
-            },
-            {
-              "key": "Date de contact",
-              "dateValue": "={{ $now.toISO() }}"
-            },
-            {
-              "key": "Étape",
-              "richTextValue": "={{ $json.step }}"
-            }
-          ]
-        }
+        "resume": "timeInterval",
+        "unit": "days",
+        "amount": 2
+      }
+    },
+    {
+      "id": "f721bad3-ff6e-46a8-a091-94e500e308fb",
+      "name": "Email Suivi J2",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        300
+      ],
+      "parameters": {
+        "fromEmail": "={{ $json.from_email }}",
+        "toEmail": "={{ $json.lead_email }}",
+        "subject": "Suivi personnalisé",
+        "emailType": "html",
+        "message": "<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Votre projet — Suivi personnalisé</title>\n  <style>\n    body { margin: 0; padding: 0; background-color: #f5f5f0; font-family: 'Georgia', serif; color: #2c2c2c; }\n    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 4px; overflow: hidden; }\n    .header { background-color: #1a1a2e; padding: 40px 48px; }\n    .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }\n    .header p { margin: 6px 0 0; color: #a0a0b8; font-size: 13px; letter-spacing: 1px; }\n    .body { padding: 48px; }\n    .body h2 { font-size: 20px; font-weight: 400; color: #1a1a2e; margin: 0 0 24px; }\n    .body p { font-size: 15px; line-height: 1.8; margin: 0 0 18px; color: #444; }\n    .property-card { border: 1px solid #e8e8e4; border-radius: 4px; padding: 24px; margin: 28px 0; }\n    .property-card h3 { margin: 0 0 8px; font-size: 16px; color: #1a1a2e; font-weight: 400; }\n    .property-card p { margin: 0; font-size: 14px; color: #777; }\n    .property-card .price { margin-top: 12px; font-size: 18px; color: #1a1a2e; font-weight: 400; }\n    .cta { display: inline-block; margin-top: 12px; background-color: #1a1a2e; color: #ffffff; text-decoration: none; padding: 14px 32px; font-size: 14px; letter-spacing: 1px; border-radius: 2px; }\n    .cta-secondary { display: inline-block; margin-top: 12px; margin-left: 16px; color: #1a1a2e; text-decoration: underline; font-size: 14px; }\n    .footer { border-top: 1px solid #eee; padding: 28px 48px; font-size: 12px; color: #999; line-height: 1.7; }\n    .footer a { color: #999; text-decoration: underline; }\n  </style>\n</head>\n<body>\n  <div class=\"wrapper\">\n    <div class=\"header\">\n      <h1>{{agency_name}}</h1>\n      <p>Agence Immobilière</p>\n    </div>\n    <div class=\"body\">\n      <h2>{{lead_name}}, voici notre sélection pour vous</h2>\n      <p>\n        Deux jours se sont écoulés depuis votre demande, et nous avons pris le temps\n        d'analyser votre profil pour vous proposer des biens qui correspondent\n        précisément à vos critères.\n      </p>\n      <p>\n        Voici une première sélection que notre équipe a constituée spécialement pour vous :\n      </p>\n\n      <div class=\"property-card\">\n        <h3>{{property_1_title}}</h3>\n        <p>{{property_1_description}}</p>\n        <p class=\"price\">{{property_1_price}}</p>\n      </div>\n\n      <div class=\"property-card\">\n        <h3>{{property_2_title}}</h3>\n        <p>{{property_2_description}}</p>\n        <p class=\"price\">{{property_2_price}}</p>\n      </div>\n\n      <p>\n        Ces biens vous correspondent ? Réservons un créneau pour en discuter\n        et, si vous le souhaitez, organiser une visite rapidement.\n      </p>\n\n      <a href=\"{{booking_url}}\" class=\"cta\">Prendre rendez-vous</a>\n      <a href=\"{{listings_url}}\" class=\"cta-secondary\">Voir tous nos biens</a>\n    </div>\n    <div class=\"footer\">\n      <p>\n        {{agency_name}} · {{agency_address}}<br />\n        <a href=\"mailto:{{agency_email}}\">{{agency_email}}</a> · {{agency_phone}}\n      </p>\n      <p><a href=\"{{unsubscribe_url}}\">Se désabonner</a></p>\n    </div>\n  </div>\n</body>\n</html>\n",
+        "options": {}
       },
       "credentials": {
-        "notionApi": {
-          "id": "notion-credentials",
-          "name": "Notion"
+        "smtp": {
+          "id": "",
+          "name": "SMTP"
         }
       }
     }
   ],
   "connections": {
-    "Webhook Trigger": {
-      "main": [[{ "node": "Wait", "type": "main", "index": 0 }]]
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Email Bienvenue J0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
-    "Wait": {
-      "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]]
+    "Email Bienvenue J0": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 jours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
-    "Send Email": {
-      "main": [[{ "node": "Notion Append", "type": "main", "index": 0 }]]
+    "Wait 2 jours": {
+      "main": [
+        [
+          {
+            "node": "Email Suivi J2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
