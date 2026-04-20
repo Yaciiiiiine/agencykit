@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Votre projet — Suivi personnalisé</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f5f5f0; font-family: 'Georgia', serif; color: #2c2c2c; }
+    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 4px; overflow: hidden; }
+    .header { background-color: #1a1a2e; padding: 40px 48px; }
+    .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+    .header p { margin: 6px 0 0; color: #a0a0b8; font-size: 13px; letter-spacing: 1px; }
+    .body { padding: 48px; }
+    .body h2 { font-size: 20px; font-weight: 400; color: #1a1a2e; margin: 0 0 24px; }
+    .body p { font-size: 15px; line-height: 1.8; margin: 0 0 18px; color: #444; }
+    .property-card { border: 1px solid #e8e8e4; border-radius: 4px; padding: 24px; margin: 28px 0; }
+    .property-card h3 { margin: 0 0 8px; font-size: 16px; color: #1a1a2e; font-weight: 400; }
+    .property-card p { margin: 0; font-size: 14px; color: #777; }
+    .property-card .price { margin-top: 12px; font-size: 18px; color: #1a1a2e; font-weight: 400; }
+    .cta { display: inline-block; margin-top: 12px; background-color: #1a1a2e; color: #ffffff; text-decoration: none; padding: 14px 32px; font-size: 14px; letter-spacing: 1px; border-radius: 2px; }
+    .cta-secondary { display: inline-block; margin-top: 12px; margin-left: 16px; color: #1a1a2e; text-decoration: underline; font-size: 14px; }
+    .footer { border-top: 1px solid #eee; padding: 28px 48px; font-size: 12px; color: #999; line-height: 1.7; }
+    .footer a { color: #999; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>{{agency_name}}</h1>
+      <p>Agence Immobilière</p>
+    </div>
+    <div class="body">
+      <h2>{{lead_name}}, voici notre sélection pour vous</h2>
+      <p>
+        Deux jours se sont écoulés depuis votre demande, et nous avons pris le temps
+        d'analyser votre profil pour vous proposer des biens qui correspondent
+        précisément à vos critères.
+      </p>
+      <p>
+        Voici une première sélection que notre équipe a constituée spécialement pour vous :
+      </p>
+
+      <div class="property-card">
+        <h3>{{property_1_title}}</h3>
+        <p>{{property_1_description}}</p>
+        <p class="price">{{property_1_price}}</p>
+      </div>
+
+      <div class="property-card">
+        <h3>{{property_2_title}}</h3>
+        <p>{{property_2_description}}</p>
+        <p class="price">{{property_2_price}}</p>
+      </div>
+
+      <p>
+        Ces biens vous correspondent ? Réservons un créneau pour en discuter
+        et, si vous le souhaitez, organiser une visite rapidement.
+      </p>
+
+      <a href="{{booking_url}}" class="cta">Prendre rendez-vous</a>
+      <a href="{{listings_url}}" class="cta-secondary">Voir tous nos biens</a>
+    </div>
+    <div class="footer">
+      <p>
+        {{agency_name}} · {{agency_address}}<br />
+        <a href="mailto:{{agency_email}}">{{agency_email}}</a> · {{agency_phone}}
+      </p>
+      <p><a href="{{unsubscribe_url}}">Se désabonner</a></p>
+    </div>
+  </div>
+</body>
+</html>
