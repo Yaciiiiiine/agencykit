@@ -1,0 +1,6 @@
+{
+  "agency_name": "",
+  "delay_days": [0, 2, 5, 10],
+  "smtp_email": "",
+  "slack_webhook": ""
+}
