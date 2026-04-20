@@ -37,7 +37,7 @@ AUTH_HEADER=""
 try_import() {
   local header="$1"
   curl -s -w "\n%{http_code}" \
-    -X POST "$N8N_URL/rest/workflows" \
+    -X POST "$N8N_URL/api/v1/workflows" \
     -H "Content-Type: application/json" \
     ${header:+-H "$header"} \
     -d @"$WORKFLOW_FILE"
