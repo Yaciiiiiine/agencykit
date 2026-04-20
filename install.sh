@@ -31,31 +31,68 @@ if [[ ! -f "$WORKFLOW_FILE" ]]; then
   exit 1
 fi
 
-# ── 3. Construire les headers d'authentification ──────────────────────────────
+# ── 3. Déterminer le header d'authentification ───────────────────────────────
 AUTH_HEADER=""
-if [[ -n "$N8N_API_KEY" ]]; then
-  AUTH_HEADER="X-N8N-API-KEY: $N8N_API_KEY"
-else
+
+try_import() {
+  local header="$1"
+  curl -s -w "\n%{http_code}" \
+    -X POST "$N8N_URL/rest/workflows" \
+    -H "Content-Type: application/json" \
+    ${header:+-H "$header"} \
+    -d @"$WORKFLOW_FILE"
+}
+
+if [[ -z "$N8N_API_KEY" ]]; then
   echo "⚠  N8N_API_KEY non définie — tentative sans authentification."
-  echo "   Si l'import échoue, renseignez N8N_API_KEY dans votre fichier .env"
 fi
 
-# ── 4. Importer le workflow via l'API REST ────────────────────────────────────
+# ── 4. Importer le workflow en testant les deux formats d'auth ────────────────
 echo "→ Import du workflow dans n8n ..."
 
-HTTP_RESPONSE=$(curl -s -w "\n%{http_code}" \
-  -X POST "$N8N_URL/rest/workflows" \
-  -H "Content-Type: application/json" \
-  ${AUTH_HEADER:+-H "$AUTH_HEADER"} \
-  -d @"$WORKFLOW_FILE")
+HTTP_BODY=""
+HTTP_CODE=""
 
-HTTP_BODY=$(echo "$HTTP_RESPONSE" | head -n -1)
-HTTP_CODE=$(echo "$HTTP_RESPONSE" | tail -n 1)
+for CANDIDATE in \
+  "X-N8N-API-KEY: $N8N_API_KEY" \
+  "Authorization: Bearer $N8N_API_KEY"
+do
+  # Skip auth candidates when no key provided
+  if [[ -z "$N8N_API_KEY" ]] && [[ "$CANDIDATE" != "" ]]; then
+    CANDIDATE=""
+  fi
+
+  RESPONSE=$(try_import "$CANDIDATE")
+  HTTP_BODY=$(echo "$RESPONSE" | head -n -1)
+  HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+
+  if [[ "$HTTP_CODE" == "200" || "$HTTP_CODE" == "201" ]]; then
+    AUTH_HEADER="$CANDIDATE"
+    break
+  fi
+
+  # Only loop when we have a key to try
+  [[ -z "$N8N_API_KEY" ]] && break
+done
 
 if [[ "$HTTP_CODE" != "200" && "$HTTP_CODE" != "201" ]]; then
   echo "✗ Échec de l'import (HTTP $HTTP_CODE)"
   echo "  Réponse : $HTTP_BODY"
+  if [[ -n "$N8N_API_KEY" ]]; then
+    echo "  Les deux formats de header ont été testés sans succès :"
+    echo "    • X-N8N-API-KEY"
+    echo "    • Authorization: Bearer"
+    echo "  Vérifiez que votre clé API est correcte et que les droits sont suffisants."
+  fi
   exit 1
+fi
+
+if [[ -z "$N8N_API_KEY" ]]; then
+  echo "✓ Authentification : aucune clé (accès libre)"
+elif [[ "$AUTH_HEADER" == X-N8N-API-KEY* ]]; then
+  echo "✓ Authentification : X-N8N-API-KEY"
+else
+  echo "✓ Authentification : Authorization: Bearer"
 fi
 
 # ── 5. Extraire l'ID et afficher le lien ─────────────────────────────────────
