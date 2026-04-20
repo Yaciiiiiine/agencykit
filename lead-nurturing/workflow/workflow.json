@@ -1,0 +1,104 @@
+{
+  "name": "Lead Nurturing — Agence",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-nurturing",
+        "responseMode": "onReceived",
+        "options": {}
+      }
+    },
+    {
+      "id": "2",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "parameters": {
+        "resume": "timeInterval",
+        "unit": "days",
+        "amount": "={{ $json.delay_days ?? 0 }}"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [750, 300],
+      "parameters": {
+        "fromEmail": "={{ $env.SMTP_EMAIL }}",
+        "toEmail": "={{ $json.lead_email }}",
+        "subject": "={{ $json.email_subject }}",
+        "emailType": "html",
+        "message": "={{ $json.email_body }}",
+        "options": {}
+      },
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "id": "4",
+      "name": "Notion Append",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [1000, 300],
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_DATABASE_ID }}",
+        "title": "={{ $json.lead_name }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Email",
+              "emailValue": "={{ $json.lead_email }}"
+            },
+            {
+              "key": "Statut",
+              "selectValue": "Contacté"
+            },
+            {
+              "key": "Date de contact",
+              "dateValue": "={{ $now.toISO() }}"
+            },
+            {
+              "key": "Étape",
+              "richTextValue": "={{ $json.step }}"
+            }
+          ]
+        }
+      },
+      "credentials": {
+        "notionApi": {
+          "id": "notion-credentials",
+          "name": "Notion"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "Wait", "type": "main", "index": 0 }]]
+    },
+    "Wait": {
+      "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]]
+    },
+    "Send Email": {
+      "main": [[{ "node": "Notion Append", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
